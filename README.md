@@ -1,2 +1,2 @@
-# TaskManagement_API
-API repository for the Task Management Application
+# TaskManagement_APP
+APP repository for the Task Management Application
