@@ -1,8 +1,11 @@
 import REACT from 'react'
-
+import Cards from "../components/Home/Cards";
 const CompletedTasks = () => {
   return (
-    <div>CompletedTasks</div>
+    <div>
+      <Cards home = {"false"} />
+    
+    </div>
   )
 }
 
