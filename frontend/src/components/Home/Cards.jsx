@@ -1,64 +1,85 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { FaRegEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { CiCirclePlus } from "react-icons/ci";
 
-const Cards = ({ home, setInputDiv }) => {
-  const [tasks, setTasks] = useState([
-    {
-      title: "Project due",
-      desc: "Me and my team need to create a good task management web application",
-      duedate: "May 5th",
-      status: "Inprogress"
-    },
-    {
-      title: "Simple UI",
-      desc: "I need to make the simple UI for the project",
-      duedate: "April 15",
-      status: "Complete"
-    },
-    {
-      title: "API",
-      desc: "Need to make a simple API backend to connect frontend and backend",
-      duedate: "April 25th",
-      status: "Incomplete"
-    }
-  ]);
+const Cards = ({ home, setInputDiv, status }) => {
+  const [tasks, setTasks] = useState([]);
+  const [error, setError] = useState(null);
 
-  const cycleStatus = (index) => {
+  const fetchTasks = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const url = status
+        ? `http://localhost:5000/api/tasks/status/${status}`
+        : 'http://localhost:5000/api/tasks';
+      const response = await axios.get(url, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setTasks(response.data);
+    } catch (err) {
+      setError('Failed to fetch tasks');
+    }
+  };
+
+  useEffect(() => {
+    fetchTasks();
+  }, [status]);
+
+  const cycleStatus = async (id, currentStatus) => {
     const statusOrder = ["Inprogress", "Complete", "Incomplete"];
-    setTasks(prev => {
-      const updated = [...prev];
-      const currentStatus = updated[index].status;
-      const nextIndex = (statusOrder.indexOf(currentStatus) + 1) % statusOrder.length;
-      updated[index].status = statusOrder[nextIndex];
-      return updated;
-    });
+    const nextIndex = (statusOrder.indexOf(currentStatus) + 1) % statusOrder.length;
+    const newStatus = statusOrder[nextIndex];
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.put(
+        `http://localhost:5000/api/tasks/${id}`,
+        { status: newStatus },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setTasks(tasks.map(task => task._id === id ? response.data : task));
+    } catch (err) {
+      setError('Failed to update status');
+    }
+  };
+
+  const deleteTask = async (id) => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`http://localhost:5000/api/tasks/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setTasks(tasks.filter(task => task._id !== id));
+    } catch (err) {
+      setError('Failed to delete task');
+    }
   };
 
   return (
     <div className="grid grid-cols-4 gap-4 p-4">
-      {tasks.map((items, i) => (
-        <div key={i} className="flex flex-col justify-between bg-gray-700 rounded-sm p-4">
+      {error && <p className="text-red-500">{error}</p>}
+      {tasks.map((task) => (
+        <div key={task._id} className="flex flex-col justify-between bg-gray-700 rounded-sm p-4">
           <div>
-            <h3 className='text-xl font-semibold'>{items.title}</h3>
-            <h4 className='text-lg text-purple-300'>{items.duedate}</h4>
-            <p className='text-gray-300 my-2'>{items.desc}</p>
+            <h3 className='text-xl font-semibold'>{task.title}</h3>
+            <h4 className='text-lg text-purple-300'>{task.duedate}</h4>
+            <p className='text-gray-300 my-2'>{task.desc}</p>
           </div>
           <div className='mt-4 w-full flex items-center justify-between'>
             <button
-              onClick={() => cycleStatus(i)}
+              onClick={() => cycleStatus(task._id, task.status)}
               className={`p-2 rounded text-white ${
-                items.status === "Complete" ? "bg-green-500" :
-                items.status === "Inprogress" ? "bg-yellow-500" :
+                task.status === "Complete" ? "bg-green-500" :
+                task.status === "Inprogress" ? "bg-yellow-500" :
                 "bg-red-500"
               }`}
             >
-              {items.status}
+              {task.status}
             </button>
             <div className='text-white text-2xl font-semibold flex gap-3'>
               <button><FaRegEdit /></button>
-              <button><MdDelete /></button>
+              <button onClick={() => deleteTask(task._id)}><MdDelete /></button>
             </div>
           </div>
         </div>

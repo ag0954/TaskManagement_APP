@@ -1,12 +1,12 @@
-import REACT from 'react'
-import Cards from "../components/Home/Cards"
+import React from 'react';
+import Cards from "../components/Home/Cards";
 
 const ProgressTasks = () => {
   return (
     <div>
-      <Cards home={false} />
+      <Cards home={false} status="Inprogress" />
     </div>
-  )
-}
+  );
+};
 
-export default ProgressTasks
+export default ProgressTasks;
