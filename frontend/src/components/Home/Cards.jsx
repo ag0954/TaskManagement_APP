@@ -3,10 +3,12 @@ import axios from 'axios';
 import { FaRegEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { CiCirclePlus } from "react-icons/ci";
+import InputData from "./inputData";
 
-const Cards = ({ home, setInputDiv, status }) => {
+const Cards = ({ home, setInputDiv, status, InputDiv }) => {
   const [tasks, setTasks] = useState([]);
   const [error, setError] = useState(null);
+  const [editTask, setEditTask] = useState(null);
 
   const fetchTasks = async () => {
     try {
@@ -56,6 +58,11 @@ const Cards = ({ home, setInputDiv, status }) => {
     }
   };
 
+  const handleEdit = (task) => {
+    setEditTask(task);
+    setInputDiv("fixed");
+  };
+
   return (
     <div className="grid grid-cols-4 gap-4 p-4">
       {error && <p className="text-red-500">{error}</p>}
@@ -78,7 +85,7 @@ const Cards = ({ home, setInputDiv, status }) => {
               {task.status}
             </button>
             <div className='text-white text-2xl font-semibold flex gap-3'>
-              <button><FaRegEdit /></button>
+              <button onClick={() => handleEdit(task)}><FaRegEdit /></button>
               <button onClick={() => deleteTask(task._id)}><MdDelete /></button>
             </div>
           </div>
@@ -87,11 +94,25 @@ const Cards = ({ home, setInputDiv, status }) => {
       {home && (
         <button
           className='flex flex-col justify-center items-center bg-gray-700 rounded-sm p-4 text-gray-300 hover:scale-105 hover:cursor-pointer transition-all duration-300'
-          onClick={() => setInputDiv("fixed")}
+          onClick={() => {
+            setEditTask(null);
+            setInputDiv("fixed");
+          }}
         >
           <CiCirclePlus className='text-5xl' />
           <h2 className='text-2xl mt-4'>Add Task</h2>
         </button>
+      )}
+      {InputDiv === "fixed" && (
+        <InputData
+          InputDiv={InputDiv}
+          onClose={() => {
+            setInputDiv("hidden");
+            setEditTask(null);
+          }}
+          task={editTask}
+          setTasks={setTasks}
+        />
       )}
     </div>
   );

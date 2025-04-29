@@ -1,28 +1,60 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { IoClose } from "react-icons/io5";
 
-const InputData = ({ InputDiv = '', onClose }) => {
+const InputData = ({ InputDiv = '', onClose, task = null, setTasks }) => {
   const [title, setTitle] = useState('');
   const [desc, setDesc] = useState('');
   const [duedate, setDuedate] = useState('');
+  const [status, setStatus] = useState('Incomplete');
   const [error, setError] = useState(null);
+
+  // Prefill form if editing a task
+  useEffect(() => {
+    if (task) {
+      setTitle(task.title || '');
+      setDesc(task.desc || '');
+      setDuedate(task.duedate || '');
+      setStatus(task.status || 'Incomplete');
+    }
+  }, [task]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem('token');
-      await axios.post(
-        'http://localhost:5000/api/tasks',
-        { title, desc, duedate, status: 'Incomplete' },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const payload = { title, desc, duedate, status };
+      let response;
+
+      if (task) {
+        // Edit existing task
+        response = await axios.put(
+          `http://localhost:5000/api/tasks/${task._id}`,
+          payload,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        // Update task list
+        setTasks(prev => prev.map(t => t._id === task._id ? response.data : t));
+      } else {
+        // Create new task
+        response = await axios.post(
+          'http://localhost:5000/api/tasks',
+          payload,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        // Add new task to list
+        setTasks(prev => [...prev, response.data]);
+      }
+
+      // Reset form and close
       setTitle('');
       setDesc('');
       setDuedate('');
+      setStatus('Incomplete');
+      setError(null);
       onClose();
     } catch (err) {
-      setError('Failed to create task');
+      setError(err.response?.data.message || 'Failed to save task');
     }
   };
 
@@ -61,7 +93,19 @@ const InputData = ({ InputDiv = '', onClose }) => {
               onChange={(e) => setDuedate(e.target.value)}
               className='px-3 py-2 rounded w-full bg-gray-700 my-3 text-white'
             />
-            <button type="submit" className='px-3 py-2 bg-blue-400 rounded text-white text-xl font-semibold'>Submit</button>
+            <select
+              name="status"
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+              className="px-3 py-2 rounded w-full bg-gray-700 my-3 text-white"
+            >
+              <option value="Inprogress">In Progress</option>
+              <option value="Complete">Complete</option>
+              <option value="Incomplete">Incomplete</option>
+            </select>
+            <button type="submit" className='px-3 py-2 bg-blue-400 rounded text-white text-xl font-semibold'>
+              {task ? 'Update Task' : 'Submit'}
+            </button>
           </form>
         </div>
       </div>
