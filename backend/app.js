@@ -3,7 +3,7 @@ const passport = require('passport');
 const cors = require('cors');
 require('dotenv').config();
 
-// JWT strategy setup
+// JWT strategy setup - require authorization
 require('./auth_jwt');
 
 const authRoutes = require('./authRoutes');
