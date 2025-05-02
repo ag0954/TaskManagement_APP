@@ -1,12 +1,14 @@
 # Task Management Application
 
-task Managment Web application that allows the user to manage their daily, weekly, and monthly task to their convenience
+This is a Task Management Web application that allows the user to manage their daily, weekly, and monthly tasks for their convenience. 
 
-Current build of the project supports task creation, deletion, and categorization. You must sign in order to use this application
+The current build of the project supports task creation, deletion, and categorization. You must sign in order to use this application. 
 
-## Author
+## Authors
 
 - Abraham Gutierrez
+- Oluwatosin Omiteru
+- Simran Mogadala
 - Due Date: 5/4/2025
 
 ### Installing
