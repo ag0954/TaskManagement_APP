@@ -61,6 +61,8 @@ The frontend and backend will each have it's own directory in the terminal.
 
 # Web Application
 
+[Link to the React App](https://taskmanagement-app-np96.onrender.com)
+
 - SignUp and Login
 - Main Page Includes: 
 1. All Tasks
