@@ -10,7 +10,7 @@ The current build of the project supports task creation, deletion, and categoriz
 - Oluwatosin Omiteru
 - Simran Mogadala
 
-**Due Date**: *5/4/2025*
+**Due Date**: 05/04/2025
 
 ### Installing
 
