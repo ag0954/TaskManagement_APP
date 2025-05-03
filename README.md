@@ -9,7 +9,8 @@ The current build of the project supports task creation, deletion, and categoriz
 - Abraham Gutierrez
 - Oluwatosin Omiteru
 - Simran Mogadala
-- Due Date: 5/4/2025
+
+**Due Date**: *5/4/2025*
 
 ### Installing
 
@@ -39,8 +40,8 @@ cd frontend
 npm start
 ```
 
-
-The server will start on `localhost:8000`.
+The server will start on `localhost:8000`. 
+The frontend and backend will each have it's own directory in the terminal.
 
 ## API Endpoints
 
@@ -60,4 +61,10 @@ The server will start on `localhost:8000`.
 
 # Web Application
 
-TBC
+- Login Page
+
+- Main Page: 
+1. All Tasks
+2. Tasks Inprogress
+3. Completed Tasks
+4. Incomplete Tasks
