@@ -61,9 +61,8 @@ The frontend and backend will each have it's own directory in the terminal.
 
 # Web Application
 
-- Login Page
-
-- Main Page: 
+- SignUp and Login
+- Main Page Includes: 
 1. All Tasks
 2. Tasks Inprogress
 3. Completed Tasks
